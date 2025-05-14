@@ -192,7 +192,7 @@ const Calculator: React.FC = () => {
       top: 0,
       left: 0,
       overflow: 'hidden'
-    }} className="py-10" >
+    }} className="pb-20" >
       {/* Display Area */}
       <div style={{
         flex: 1,
@@ -203,7 +203,7 @@ const Calculator: React.FC = () => {
         padding: '20px',
         background: 'transparent',
         overflow: 'hidden'
-      }} className="py-10">
+      }} className="py-20">
         <div style={{
           width: '100%',
           textAlign: 'right',
@@ -269,7 +269,7 @@ const Calculator: React.FC = () => {
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: '2px',
+        gap: '1px',
         padding: '10px',
         background: '#f0f0f0'
       }}>
