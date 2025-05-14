@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { HiOutlineClock, HiX } from "react-icons/hi";
+import { BsArrowLeft } from "react-icons/bs";
 import { HistoryItem } from "@/libs/types/History";
 import { getHistoryFromLocalStorage, clearHistory, addToHistory } from "@/libs/logic/History";
 
@@ -9,7 +10,7 @@ import { getHistoryFromLocalStorage, clearHistory, addToHistory } from "@/libs/l
 type ButtonProps = {
   label: string;
   onClick: () => void;
-  type?: 'primary' | 'secondary' | 'operator' | 'equal' | 'history';
+  type?: 'primary' | 'secondary' | 'operator' | 'equal' | 'history' | 'red';
   disabled?: boolean;
 };
 
@@ -21,11 +22,13 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   const baseStyle = {
     border: 'none',
-    borderRadius: '50%',
+    borderRadius: '20%',
     fontSize: '1.5rem',
-    width: '60px',
-    height: '60px',
-    margin: '8px',
+    width: '20vw',
+    height: '20vw',
+    maxWidth: '80px',
+    maxHeight: '80px',
+    margin: '2vw',
     cursor: disabled ? 'not-allowed' : 'pointer',
     opacity: disabled ? 0.6 : 1,
     transition: 'all 0.2s ease',
@@ -65,16 +68,19 @@ const Button: React.FC<ButtonProps> = ({
       color: '#fff',
     },
     equal: {
-      background: 'linear-gradient(145deg, #34c759, #2da64e)',
+      background: 'linear-gradient(145deg,rgb(1, 175, 255),rgb(24, 173, 196))',
       color: '#fff',
     },
     secondary: {
       background: 'linear-gradient(145deg, #d4d4d2, #b3b3b1)',
       color: '#222',
     },
+    red: {
+      background: 'linear-gradient(145deg, #f0f0f0, #cacaca)',
+      color: '#D80000',
+    },
     history: {
-      background: 'linear-gradient(145deg, #a7a7a7, #8e8e8e)',
-      color: '#fff',
+      color: '#000',
     }
   };
 
@@ -93,52 +99,16 @@ const Button: React.FC<ButtonProps> = ({
   );
 };
 
-// ===== Input Component =====
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-  error?: string;
-}
-
-const Input: React.FC<InputProps> = ({ error, ...props }) => {
-  return (
-    <div style={{ marginBottom: '1rem', width: '100%' }}>
-      <input
-        {...props}
-        style={{
-          width: '100%',
-          padding: '20px',
-          border: error ? '1px solid #e53e3e' : 'none',
-          borderRadius: '12px',
-          fontSize: '2rem',
-          outline: 'none',
-          boxSizing: 'border-box',
-          background: '#f5f5f5',
-          boxShadow: `
-            inset 2px 2px 5px #d0d0d0,
-            inset -2px -2px 5px #ffffff
-          `,
-          textAlign: 'right',
-          fontFamily: 'monospace',
-          fontWeight: 'bold'
-        }}
-      />
-      {error && (
-        <span style={{ color: '#e53e3e', fontSize: '0.875rem' }}>{error}</span>
-      )}
-    </div>
-  );
-};
-
 // ===== Calculator Component =====
 const buttons = [
-  ["7", "8", "9", "/"],
-  ["4", "5", "6", "*"],
+  ["C", "⌫", "%", "/"],
+  ["7", "8", "9", "*"],
+  ["4", "5", "6", "+"],
   ["1", "2", "3", "-"],
-  ["0", ".", "=", "+"],
-  ["C", "⌫", "H"]
+  ["+/-", "0", ".", "="],
 ];
 
-const isOperator = (val: string) => ["+", "-", "*", "/"].includes(val);
+const isOperator = (val: string) => ["+", "-", "*", "/", "%"].includes(val);
 
 const Calculator: React.FC = () => {
   const [input, setInput] = useState<string>("");
@@ -201,40 +171,119 @@ const Calculator: React.FC = () => {
   };
 
   const getButtonType = (btn: string) => {
-    if (btn === "C") return 'secondary';
+    if (btn === "C") return 'red';
     if (btn === "H") return 'history';
     if (btn === "=") return 'equal';
-    if (isOperator(btn)) return 'operator';
+    if (isOperator(btn)) return 'primary';
     return 'primary';
   };
 
   return (
     <div style={{
-      maxWidth: '360px',
-      margin: '2rem auto',
-      padding: '2rem',
-      borderRadius: '20px',
+      width: '100%',
+      height: '100vh',
+      margin: '0 auto',
       background: '#f0f0f0',
-      boxShadow: `
-        20px 20px 60px #d9d9d9,
-        -20px -20px 60px #ffffff
-      `,
-      position: 'relative'
+      boxSizing: 'border-box',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-end',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      overflow: 'hidden'
     }}>
-      <Input
-        value={result || input || "0"}
-        onChange={() => {}}
-        readOnly
-      />
+      {/* Display Area */}
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+        padding: '20px',
+        background: 'transparent',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          width: '100%',
+          textAlign: 'right',
+          fontSize: '1.5rem',
+          color: '#666',
+          padding: '10px 0',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
+        }}>
+          {input}
+        </div>
+        <div style={{
+          width: '100%',
+          textAlign: 'right',
+          fontSize: '2.5rem',
+          fontWeight: 'bold',
+          color: '#222',
+          padding: '10px 0',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
+        }}>
+          {result || "0"}
+        </div>
+      </div>
       
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-        {buttons.flat().map((btn, idx) => (
-          <Button
-            key={idx}
-            label={btn}
-            onClick={() => handleButtonClick(btn)}
-            type={getButtonType(btn)}
-          />
+      {/* Navigation */}
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '0 20px',
+        marginBottom: '10px'
+      }}>
+        <button 
+          onClick={() => setShowHistory(true)}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            fontSize: '1.5rem',
+            color: '#666',
+            cursor: 'pointer'
+          }}
+        >
+          <HiOutlineClock />
+        </button>
+        <button 
+          onClick={() => window.location.reload()}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            fontSize: '1.5rem',
+            color: '#666',
+            cursor: 'pointer'
+          }}
+        >
+          <BsArrowLeft />
+        </button>
+      </div>
+      
+      {/* Buttons Grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gap: '2px',
+        padding: '10px',
+        background: '#f0f0f0'
+      }}>
+        {buttons.map((row, rowIndex) => (
+          <React.Fragment key={rowIndex}>
+            {row.map((btn, btnIndex) => (
+              <Button
+                key={`${rowIndex}-${btnIndex}`}
+                label={btn}
+                onClick={() => handleButtonClick(btn)}
+                type={getButtonType(btn)}
+              />
+            ))}
+          </React.Fragment>
         ))}
       </div>
       
